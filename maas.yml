@@ -38,8 +38,7 @@ packages:
   jq
 snap:
   commands:
-    - snap install maas
-#    - snap install --channel=3.0/stable maas
+    - snap install maas --channel=2.7/stable
     - snap install --channel=latest/stable lxd
     - snap refresh --channel=latest/stable lxd
     - snap install maas-test-db
@@ -62,7 +61,7 @@ runcmd:
 - maas init region+rack --database-uri maas-test-db:/// --maas-url http://${IP_ADDRESS}:5240/MAAS
 - sleep 15
 # Create MAAS admin and grab API key
-- maas createadmin --username admin --password admin --email admin
+- maas createadmin --username admin --password adminpass --email mail@tufpointe.com
 - export APIKEY=$(maas apikey --username admin)
 # MAAS admin login
 - maas login admin 'http://localhost:5240/MAAS/' $APIKEY
@@ -74,7 +73,7 @@ runcmd:
 - maas admin subnet update $SUBNET gateway_ip=10.10.10.1
 - maas admin ipranges create type=dynamic start_ip=10.10.10.200 end_ip=10.10.10.254
 - maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=True primary_rack=$PRIMARY_RACK
-- maas admin maas set-config name=upstream_dns value=8.8.8.8
+- maas admin maas set-config name=upstream_dns value=1.1.1.1
 # Add LXD as a VM host for MAAS
 - maas admin vm-hosts create  password=password  type=lxd power_address=https://${IP_ADDRESS}:8443 project=maas
 # Automatically create and add ssh keys to MAAS
